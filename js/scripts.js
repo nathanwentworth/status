@@ -10,6 +10,8 @@ var lastTimeTempAccessed;
 var temp;
 var reviewNo;
 
+var time;
+
 var CLIENT_ID = '171868967722-8hgapsq2vvu9v6aqgud3vgi5v9n3apkp.apps.googleusercontent.com';
 var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
 var SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels';
@@ -21,6 +23,8 @@ window.onload = function () {
 function init() {
   var d = new Date();
   var n = d.getTime();
+
+  getTime();
 
   lastTimeTempAccessed = localStorage.getItem('lastTimeTempAccessed');
   if (lastTimeTempAccessed != null) {
@@ -52,7 +56,7 @@ function init() {
 
   window.setInterval(function () {
     getWaniKaniData();
-  }, 3600000);
+  }, 900000);
 }
 
 
@@ -69,12 +73,14 @@ function getTime() {
   if (m < 10) {
     m = '0' + m;
   }
+
   displayTime(h, m);
 }
 
 function displayTime(h, m) {
   var timeEl = document.getElementById('time');
-  timeEl.innerText = h + ":" + m;
+  time = h + ":" + m;
+  timeEl.innerText = time;
 }
 
 function getWaniKaniData() {
@@ -94,6 +100,7 @@ function getWaniKaniData() {
 function getWaniKaniStudyNo(data) {
   reviewNo = data.requested_information.reviews_available;
   localStorage.setItem('wanikani', reviewNo);
+  console.log('new wanikani data recieved at ' + time);
 }
 
 function setWaniKaniDisplay() {
@@ -113,11 +120,12 @@ function getWeatherData() {
     function(err, data) {
       if (err != null) {
         console.log('Something went wrong: ' + err);
+        temp = localStorage.getItem('temp');
       } else {
         console.log('success!');
         getTemp(data);
-        setTempDisplay();
       }
+      setTempDisplay();
     }
   );
 }
@@ -142,6 +150,7 @@ function getTemp(data) {
   temp = data.main.temp;
   Math.round(temp);
   localStorage.setItem('temp', temp);
+  console.log('new temp data recieved at ' + time);
 }
 
 
@@ -186,8 +195,8 @@ function updateSigninStatus(isSignedIn) {
     displayUnread();
 
     window.setInterval(function () {
-      displayUnread(), 900000
-    });
+      displayUnread();
+    }, 900000);
 
   } else {
     handleAuthClick();
@@ -210,6 +219,7 @@ function displayUnread() {
     var unread = response.result.messagesUnread;
     var mailEl = document.getElementById('mail');
     mailEl.innerText = unread;
+    console.log('new mail data recieved at ' + time);
   });
 }
 
