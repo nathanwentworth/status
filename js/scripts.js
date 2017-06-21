@@ -1,26 +1,36 @@
-// weather key: a71f82f2133f7b4bb180150d528361ce
 
-// http://api.openweathermap.org/data/2.5/forecast?id=4936812&units=imperial&appid=a71f82f2133f7b4bb180150d528361ce
+let lastTimeTempAccessed;
+let temp;
+let reviewNo;
 
-// gmail api 171868967722-8hgapsq2vvu9v6aqgud3vgi5v9n3apkp.apps.googleusercontent.com
+let time;
 
-// wanikani api 4b9e1ddef7f0f6d5ce310ceecf0f7a41
+let weatherKey = '';
+let wanikaniKey = '';
 
-var lastTimeTempAccessed;
-var temp;
-var reviewNo;
-
-var time;
-
-var CLIENT_ID = '171868967722-8hgapsq2vvu9v6aqgud3vgi5v9n3apkp.apps.googleusercontent.com';
-var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
-var SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels';
+let CLIENT_ID = '';
+let DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
+let SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels';
 
 window.onload = function () {
   init();
 }
 
 function init() {
+
+  getJSON('/js/keys.json',
+  function(err, data) {
+    if (err != null) {
+      alert('Something went wrong: ' + err);
+    } else {
+      CLIENT_ID = data.google;
+      weatherKey = data.weather;
+      wanikani = data.wanikani;
+    }
+  });
+
+
+
   var d = new Date();
   var n = d.getTime();
 
@@ -85,7 +95,7 @@ function displayTime(h, m) {
 }
 
 function getWaniKaniData() {
-  getJSON('https://www.wanikani.com/api/user/4b9e1ddef7f0f6d5ce310ceecf0f7a41/study-queue',
+  getJSON('https://www.wanikani.com/api/user/' + wanikaniKey + '/study-queue',
     function(err, data) {
       if (err != null) {
         console.log('Something went wrong: ' + err);
@@ -117,7 +127,7 @@ function setWaniKaniDisplay() {
 }
 
 function getWeatherData() {
-  getJSON('http://api.openweathermap.org/data/2.5/weather?id=4936812&units=imperial&appid=a71f82f2133f7b4bb180150d528361ce',
+  getJSON('http://api.openweathermap.org/data/2.5/weather?id=4936812&units=imperial&appid=' + weatherKey,
     function(err, data) {
       if (err != null) {
         console.log('Something went wrong: ' + err);
@@ -225,6 +235,19 @@ function displayUnread() {
 }
 
 
-
+var getJSON = function(url, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.responseType = 'json';
+  xhr.onload = function() {
+    var status = xhr.status;
+    if (status == 200) {
+      callback(null, xhr.response);
+    } else {
+      callback(status);
+    }
+  };
+  xhr.send();
+};
 
 
