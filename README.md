@@ -5,3 +5,11 @@ a new tab/status page that displays:
 - time
 - weather (temp)
 - unread gmail count
+
+requires a `keys.json` file, in the format of:
+
+    {
+      "weather": key,
+      "google": key,
+      "wanikani": key
+    }
