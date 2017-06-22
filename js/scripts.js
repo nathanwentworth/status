@@ -23,16 +23,14 @@ function init() {
     if (err != null) {
       alert('Something went wrong: ' + err);
     } else {
-      CLIENT_ID = data.google;
+      CLIENT_ID = data.gmail;
       weatherKey = data.weather;
-      wanikani = data.wanikani;
+      wanikaniKey = data.wanikani;
     }
   });
 
-
-
-  var d = new Date();
-  var n = d.getTime();
+  let d = new Date();
+  let n = d.getTime();
 
   getTime();
 
@@ -184,6 +182,18 @@ var signoutButton = document.getElementById('signout-button');
 
 
 function handleClientLoad() {
+
+  if (CLIENT_ID == '') {
+    getJSON('/js/keys.json',
+    function(err, data) {
+      if (err != null) {
+        alert('Something went wrong: ' + err);
+      } else {
+        CLIENT_ID = data.gmail;
+      }
+    });
+  }
+
   gapi.load('client:auth2', initClient);
 }
 
