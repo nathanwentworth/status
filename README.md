@@ -14,3 +14,5 @@ requires a `keys.json` file, in the format of:
       "google": key,
       "wanikani": key
     }
+
+this can be found in `/js/keys.example.json`
