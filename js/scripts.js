@@ -12,12 +12,11 @@ let CLIENT_ID = '';
 let DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
 let SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels';
 
-window.onload = function () {
-  init();
-}
+window.addEventListener('load', function () {
+  getKeys();
+});
 
-function init() {
-
+function getKeys() {
   getJSON('/js/keys.json',
   function(err, data) {
     if (err != null) {
@@ -26,8 +25,13 @@ function init() {
       CLIENT_ID = data.gmail;
       weatherKey = data.weather;
       wanikaniKey = data.wanikani;
+
+      init();
     }
   });
+}
+
+function init() {
 
   let d = new Date();
   let n = d.getTime();
@@ -93,17 +97,21 @@ function displayTime(h, m) {
 }
 
 function getWaniKaniData() {
-  getJSON('https://www.wanikani.com/api/user/' + wanikaniKey + '/study-queue',
-    function(err, data) {
-      if (err != null) {
-        console.log('Something went wrong: ' + err);
-      } else {
-        console.log('success!');
-        getWaniKaniStudyNo(data);
-        setWaniKaniDisplay();
+  if (wanikaniKey != '') {
+    getJSON('https://www.wanikani.com/api/user/' + wanikaniKey + '/study-queue',
+      function(err, data) {
+        if (err != null) {
+          console.log('Something went wrong: ' + err);
+        } else {
+          console.log('success!');
+          getWaniKaniStudyNo(data);
+          setWaniKaniDisplay();
+        }
       }
-    }
-  );
+    );
+  } else {
+    console.error("wanikaniKey is blank!");
+  }
 }
 
 function getWaniKaniStudyNo(data) {
@@ -125,18 +133,22 @@ function setWaniKaniDisplay() {
 }
 
 function getWeatherData() {
-  getJSON('http://api.openweathermap.org/data/2.5/weather?id=4936812&units=imperial&appid=' + weatherKey,
-    function(err, data) {
-      if (err != null) {
-        console.log('Something went wrong: ' + err);
-        temp = localStorage.getItem('temp');
-      } else {
-        console.log('success!');
-        getTemp(data);
+  if (weatherKey != '') {
+    getJSON('http://api.openweathermap.org/data/2.5/weather?id=4936812&units=imperial&appid=' + weatherKey,
+      function(err, data) {
+        if (err != null) {
+          console.log('Something went wrong: ' + err);
+          temp = localStorage.getItem('temp');
+        } else {
+          console.log('success!');
+          getTemp(data);
+        }
+        setTempDisplay();
       }
-      setTempDisplay();
-    }
-  );
+    );
+  } else {
+    console.error("weatherKey is blank!");
+  }
 }
 
 var getJSON = function(url, callback) {

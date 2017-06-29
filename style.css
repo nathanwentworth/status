@@ -37,7 +37,7 @@ pre {
 /* # site styles */
 
 body {
-	background: #000;
+	background: #222;
 	color: #fff;
 	font-size: 3em;
 	font-family: 'Input Mono', monospace;
@@ -60,7 +60,7 @@ p {
 }
 
 h1 {
-	color: #555;
+	color: #696969;
 	font-size: .35em;
 	font-weight: 300;
 }
